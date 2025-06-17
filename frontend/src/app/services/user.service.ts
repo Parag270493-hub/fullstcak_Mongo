@@ -5,6 +5,8 @@ import axios from 'axios';
   providedIn: 'root'
 })
 export class UserService {
+
+  users: any[] = []; 
    
   private API_URL = 'http://localhost:5000/api/users';
 
@@ -15,8 +17,8 @@ export class UserService {
     return res.data;
   }
 
-  async addUser(user:{name:string,email:string}){
-      const res = await axios.post(this.API_URL,user);
+  async addUser(users:{name:string,email:string}){
+      const res = await axios.post(this.API_URL,users);
       return res.data;
   }
 }
