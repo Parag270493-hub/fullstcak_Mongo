@@ -1,36 +1,24 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect("mongodb://localhost:27017/testdb", {
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(() => console.log("MongoDB connected"))
-  .catch(err => console.error("MongoDB connection error:", err));
-
-// Define Schema
-const UserSchema = new mongoose.Schema({
-  name: String,
-});
-
-const User = mongoose.model("User", UserSchema);
+}).then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
 
 // Routes
-app.get("/api/users", async (req, res) => {
-  const users = await User.find();
-  res.json(users);
-});
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/users', userRoutes);
 
-app.post("/api/users", async (req, res) => {
-  const user = new User({ name: req.body.name });
-  await user.save();
-  res.json(user);
-});
-
-// Start Server
-app.listen(3000, () => console.log("Server running on http://localhost:3000"));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
